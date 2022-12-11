@@ -51,7 +51,7 @@ ETH
   https://developers.coinbase.com/api/v2#get-exchange-rates
 
 - Your service should be able to identify users. You may use any form of authentication that you think is suitable for the task (e.g., API keys, Username/Password)
-- Your service needs to store each request, the date/time it was performed, its parameters and the response body
+  - Your service needs to store each request, the date/time it was performed, its parameters and the response body
 - Each user may perform 100 requests per workday (Monday-Friday) and 200 requests per day on weekends. After the quota is used up, you need to return an error message
 - The service must accept the following parameters:
   - The source currency, the amount to be converted, and the final currency
