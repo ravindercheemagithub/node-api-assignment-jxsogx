@@ -1,8 +1,15 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { IsString, Matches, MaxLength, MinLength } from 'class-validator';
 import { UserConstants } from 'src/constants/constants';
 import { ErrorCode } from 'src/constants/error';
 
 export class SignupDto {
+  @ApiProperty({
+    description: 'username required for signup',
+    minimum: 4,
+    maximum: 16,
+    required: true,
+  })
   @IsString({
     message: ErrorCode.InvalidUserName.MESSAGE,
     context: {
@@ -13,12 +20,26 @@ export class SignupDto {
   @MaxLength(UserConstants.USERNAME_MAX_LENGTH)
   username: string;
 
+  @ApiProperty({
+    description: 'first name required to signup',
+    required: true,
+  })
   @IsString()
   firstname: string;
 
+  @ApiProperty({
+    description: 'Last name required to signup',
+    required: true,
+  })
   @IsString()
   lastname: string;
 
+  @ApiProperty({
+    description: 'password required for signup',
+    minimum: 6,
+    maximum: 20,
+    required: true,
+  })
   @IsString({
     message: ErrorCode.InvalidPassword.MESSAGE,
     context: {
