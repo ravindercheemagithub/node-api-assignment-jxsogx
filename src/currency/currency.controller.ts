@@ -1,6 +1,6 @@
 import { CurrencyResponseDto } from './dto/currency-response.dto';
 import { ErrorCode } from './../constants/error';
-import { Body, Controller, Get, Query, Res } from '@nestjs/common';
+import { Body, Controller, Get, Query, Res, UseGuards } from '@nestjs/common';
 import { CurrencyService } from './currency.service';
 import { CurrencyConverterDto } from './dto/currency-converter.dto';
 import { Observable, of, map } from 'rxjs';
@@ -13,9 +13,11 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('currency')
 @Controller('currency')
+@UseGuards(AuthGuard())
 export class CurrencyController {
   constructor(private currencyService: CurrencyService) {}
 
