@@ -18,6 +18,7 @@ import {
 } from 'rxjs';
 import { ajax } from 'rxjs/ajax';
 import { AxiosError } from 'axios';
+import { ConfigService as LocalConfigService } from 'src/config/config.service';
 
 @Injectable()
 export class CurrencyService {
@@ -25,11 +26,12 @@ export class CurrencyService {
     @InjectRepository(Currency)
     private currencyRepository: Repository<Currency>,
     private readonly httpService: HttpService,
+    private readonly localConfigService: LocalConfigService,
   ) {}
 
   convert(currencyConverterDto: CurrencyConverterDto): Observable<number> {
     const { from, to, amount } = currencyConverterDto;
-    const url = `https://api.coinbase.com/v2/exchange-rates?currency=${from}`;
+    const url = `${this.localConfigService.coinbase.URL}${from}`;
     return this.httpService.get(url).pipe(
       map((response) => response.data.data.rates[to] * amount),
       catchError((error: AxiosError) => {

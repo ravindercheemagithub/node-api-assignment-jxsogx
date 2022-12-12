@@ -5,10 +5,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { configValidationSchema } from 'config.schema';
 import { UserModule } from './user/user.module';
 import { LoggerModule } from 'nestjs-pino';
+import { ConfigModule as LocalConfigModule } from './config/config.module';
 import pino from 'pino';
 
 @Module({
   imports: [
+    LocalConfigModule,
     ConfigModule.forRoot({
       envFilePath: [`.env.stage.${process.env.STAGE}`],
       validationSchema: configValidationSchema,
@@ -43,6 +45,7 @@ import pino from 'pino';
     }),
     CurrencyModule,
     UserModule,
+    ConfigModule,
   ],
 })
 export class AppModule {}
