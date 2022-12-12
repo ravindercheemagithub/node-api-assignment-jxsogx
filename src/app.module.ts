@@ -11,8 +11,10 @@ import { configValidationSchema } from 'config.schema';
 import { UserModule } from './user/user.module';
 import { LoggerModule } from 'nestjs-pino';
 import { ConfigModule as LocalConfigModule } from './config/config.module';
+import { ConfigService as LocalConfigService } from './config/config.service';
 import pino from 'pino';
 import { RateLimitMiddleware } from './core/middleware/rate-limit.middleware';
+import { RedisModule } from './redis/redis.module';
 
 @Module({
   imports: [
@@ -49,9 +51,18 @@ import { RateLimitMiddleware } from './core/middleware/rate-limit.middleware';
         };
       },
     }),
+    RedisModule.forRootAsync({
+      useFactory: async (
+        localConfigService: LocalConfigService,
+      ): Promise<LocalConfigService> => {
+        return localConfigService;
+      },
+      inject: [LocalConfigService],
+    }),
     CurrencyModule,
     UserModule,
     ConfigModule,
+    RedisModule,
   ],
 })
 export class AppModule implements NestModule {

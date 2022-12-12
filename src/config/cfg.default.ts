@@ -13,4 +13,12 @@ export default {
     clientSecret: '',
     URL: 'https://api.coinbase.com/v2/exchange-rates?currency=',
   },
+  redis: {
+    host: '127.0.0.1',
+    port: 6379,
+    keyPrefix: 'mili:',
+    family: 4,
+    password: '',
+    db: 0,
+  },
 };

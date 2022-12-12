@@ -19,6 +19,7 @@ import {
 import { ajax } from 'rxjs/ajax';
 import { AxiosError } from 'axios';
 import { ConfigService as LocalConfigService } from 'src/config/config.service';
+import { RedisService } from '../redis/redis.service';
 
 @Injectable()
 export class CurrencyService {
@@ -27,22 +28,32 @@ export class CurrencyService {
     private currencyRepository: Repository<Currency>,
     private readonly httpService: HttpService,
     private readonly localConfigService: LocalConfigService,
+    private readonly redisService: RedisService,
   ) {}
 
-  convert(currencyConverterDto: CurrencyConverterDto): Observable<number> {
+  async convert(currencyConverterDto: CurrencyConverterDto): Promise<number> {
     const { from, to, amount } = currencyConverterDto;
     const url = `${this.localConfigService.coinbase.URL}${from}`;
-    return this.httpService.get(url).pipe(
-      map((response) => response.data.data.rates[to] * amount),
-      catchError((error: AxiosError) => {
-        throw new CurrencyServiceException(
-          {
-            errorCode: ErrorCode.ERROR.CODE,
-            message: ErrorCode.ERROR.MESSAGE,
-          },
-          500,
-        );
-      }),
-    );
+
+    let rates = await this.redisService.getRates(from);
+    let exchangeRates: AxiosResponse;
+
+    if (rates) {
+      return Number(rates[to]) * amount;
+    }
+
+    try {
+      exchangeRates = await this.httpService.get(url).toPromise();
+    } catch {
+      throw new CurrencyServiceException(
+        {
+          errorCode: ErrorCode.ERROR.CODE,
+          message: ErrorCode.ERROR.MESSAGE,
+        },
+        500,
+      );
+    }
+    await this.redisService.setRates(exchangeRates.data.data.rates);
+    return exchangeRates.data.data.rates[to] * amount;
   }
 }

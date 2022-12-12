@@ -5,6 +5,7 @@ import devJSON from './cfg.dev';
 import prodJSON from './cfg.prod';
 import { ServerConfig } from './type/ServerConfig';
 import CoinbaseConfig from './type/CoinbaseConfig';
+import RedisConfig from './type/RedisConfig';
 
 @Injectable()
 export class ConfigService {
@@ -14,6 +15,7 @@ export class ConfigService {
   readonly env: string;
   readonly server: ServerConfig;
   readonly coinbase: CoinbaseConfig;
+  readonly redis: RedisConfig;
 
   constructor() {
     const envConfigMap = {
@@ -28,5 +30,6 @@ export class ConfigService {
     }
     this.server = new ServerConfig(defaultJSON.server);
     this.coinbase = new CoinbaseConfig(defaultJSON.coinbase);
+    this.redis = new RedisConfig(defaultJSON.redis);
   }
 }
