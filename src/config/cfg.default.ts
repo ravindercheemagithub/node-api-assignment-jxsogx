@@ -5,6 +5,8 @@ const port = 3000;
 export default {
   server: {
     port,
+    weekday: { rateLimitWindowMs: 24 * 60 * 60 * 1000, rateLimitMax: 100 },
+    weekend: { rateLimitWindowMs: 24 * 60 * 60 * 1000, rateLimitMax: 200 },
   },
   coinbase: {
     clientID: '',
