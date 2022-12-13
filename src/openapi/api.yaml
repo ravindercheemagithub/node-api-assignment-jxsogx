@@ -1,0 +1,121 @@
+openapi: 3.0.0
+paths:
+  /currency/converter:
+    get:
+      operationId: CurrencyController_converter
+      summary: Currency convertor
+      parameters:
+        - name: from
+          required: true
+          in: query
+          description: From Currency code
+          schema: {}
+        - name: to
+          required: true
+          in: query
+          description: To Currency code
+          schema: {}
+        - name: amount
+          required: true
+          in: query
+          description: Amount to be converted
+          schema:
+            type: number
+      responses:
+        '200':
+          description: Currency has been successfully converted
+        '401':
+          description: Please provide correct username/password
+      tags:
+        - currency
+      security:
+        - bearer: []
+  /user/signup:
+    post:
+      operationId: UserController_signUp
+      summary: Sign up a new user
+      parameters: []
+      requestBody:
+        required: true
+        description: Sign-up Dto
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignupDto'
+      responses:
+        '201':
+          description: User has successfully Signed up
+        '409':
+          description: User already exists
+      tags: &ref_0
+        - auth
+      security: &ref_1
+        - defaultBearerAuth: []
+  /user/signin:
+    post:
+      operationId: UserController_signIn
+      summary: Sign-in existing users
+      parameters: []
+      requestBody:
+        required: true
+        description: Sign-in Dto
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SigninDto'
+      responses:
+        '200':
+          description: User has successfully Signed in.
+        '401':
+          description: Either wrong username or password
+      tags: *ref_0
+      security: *ref_1
+info:
+  title: Currency Conversion service
+  description: A secure API service to convert currency from one currency code to another
+  version: '1.0'
+  contact: {}
+tags:
+  - name: auth
+    description: ''
+  - name: currency
+    description: ''
+servers: []
+components:
+  schemas:
+    SignupDto:
+      type: object
+      properties:
+        username:
+          type: string
+          description: username required for signup
+          minimum: 4
+          maximum: 16
+        firstname:
+          type: string
+          description: first name required to signup
+        lastname:
+          type: string
+          description: Last name required to signup
+        password:
+          type: string
+          description: password required for signup
+          minimum: 6
+          maximum: 20
+      required:
+        - username
+        - firstname
+        - lastname
+        - password
+    SigninDto:
+      type: object
+      properties:
+        username:
+          type: string
+          description: username required for signin
+        password:
+          type: string
+          description: password required for signin
+      required:
+        - username
+        - password
