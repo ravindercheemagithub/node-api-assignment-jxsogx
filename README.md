@@ -123,11 +123,15 @@ BiRel(AuthRepository, Database, "CRUD", "TypeORM")
 - Sign in as existing user
   `POST /auth/signin {email, password}`
 
-- Get currency list
-  `GET /currency`
-
 - Convert one currency to another
   `GET /currency/converter?:from/:to/:amount`
+
+#### Pending Tasks - TODO
+
+- Prod configuration - DB sync off
+- Log rotation
+- Optimize logs
+- add more test cases
 
 ## Installation
 
