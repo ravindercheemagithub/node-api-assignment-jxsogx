@@ -1,3 +1,4 @@
+import { Strategy } from 'passport-jwt';
 import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import {
@@ -8,6 +9,8 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { InjectPinoLogger, PinoLogger } from 'nestjs-pino';
+import { CurrentUser } from 'src/core/decorator/currentuser.decorator';
+import { User } from 'src/user/entity/user.entity';
 import { RedisService } from '../redis/redis.service';
 import { ErrorCode } from './../constants/error';
 import { CurrencyService } from './currency.service';
@@ -32,7 +35,10 @@ export class CurrencyController {
     description: 'Please provide correct username/password',
   })
   @Get('/converter')
-  async converter(@Query() currencyConverterDto: CurrencyConverterDto) {
+  async converter(
+    @Query() currencyConverterDto: CurrencyConverterDto,
+    @CurrentUser() user: User,
+  ) {
     const rate = await this.currencyService.convert(currencyConverterDto);
 
     const response = {
@@ -40,7 +46,9 @@ export class CurrencyController {
       data: rate,
     };
     //this.logger.assign({ additionalInfo: JSON.stringify(response) });
-    this.logger.info(`additionalInfo: ${JSON.stringify(response)}`);
+    this.logger.info(
+      `additionalInfo: ${JSON.stringify(response)}, user: ${user}`,
+    );
     return response;
   }
 }
