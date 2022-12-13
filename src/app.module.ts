@@ -27,6 +27,11 @@ import { RedisModule } from './redis/redis.module';
       pinoHttp: {
         level: process.env.NODE_ENV !== 'production' ? 'debug' : 'info',
         redact: ['request.headers.authorization'],
+        stream: pino.destination({
+          dest: './logfile.log', // omit for stdout
+          minLength: 512, // Buffer before writing
+          sync: false, // Asynchronous logging
+        }),
       },
     }),
     TypeOrmModule.forRootAsync({

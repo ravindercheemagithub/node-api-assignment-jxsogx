@@ -1,30 +1,17 @@
-import { CurrencyResponseDto } from './dto/currency-response.dto';
-import { ErrorCode } from './../constants/error';
-import {
-  Body,
-  Controller,
-  Get,
-  Query,
-  Res,
-  UseGuards,
-  UseInterceptors,
-  CacheInterceptor,
-} from '@nestjs/common';
-import { CurrencyService } from './currency.service';
-import { CurrencyConverterDto } from './dto/currency-converter.dto';
-import { Observable, of, map } from 'rxjs';
+import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import {
   ApiBearerAuth,
-  ApiBody,
   ApiOkResponse,
   ApiOperation,
-  ApiQuery,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { AuthGuard } from '@nestjs/passport';
+import { InjectPinoLogger, PinoLogger } from 'nestjs-pino';
 import { RedisService } from '../redis/redis.service';
-import * as util from 'util';
+import { ErrorCode } from './../constants/error';
+import { CurrencyService } from './currency.service';
+import { CurrencyConverterDto } from './dto/currency-converter.dto';
 
 @ApiTags('currency')
 @Controller('currency')
@@ -34,6 +21,8 @@ export class CurrencyController {
   constructor(
     private currencyService: CurrencyService,
     private readonly redisService: RedisService,
+    @InjectPinoLogger(CurrencyController.name)
+    private readonly logger: PinoLogger,
   ) {}
 
   @ApiOperation({ summary: 'Currency convertor' })
@@ -45,9 +34,13 @@ export class CurrencyController {
   @Get('/converter')
   async converter(@Query() currencyConverterDto: CurrencyConverterDto) {
     const rate = await this.currencyService.convert(currencyConverterDto);
-    return {
+
+    const response = {
       errorCode: ErrorCode.SUCCESS.CODE,
       data: rate,
     };
+    //this.logger.assign({ additionalInfo: JSON.stringify(response) });
+    this.logger.info(`additionalInfo: ${JSON.stringify(response)}`);
+    return response;
   }
 }

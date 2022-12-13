@@ -1,17 +1,16 @@
-import { CurrencyServiceException } from './../core/exception/currency-service.exception';
-import { SignupDto } from './dto/signup.dto';
 import {
-  ConflictException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from './entity/user.entity';
-import { InjectPinoLogger, PinoLogger } from 'nestjs-pino';
 import * as bcrypt from 'bcrypt';
+import { InjectPinoLogger, PinoLogger } from 'nestjs-pino';
 import { ErrorCode } from 'src/constants/error';
+import { Repository } from 'typeorm';
+import { CurrencyServiceException } from './../core/exception/currency-service.exception';
+import { SignupDto } from './dto/signup.dto';
+import { User } from './entity/user.entity';
 
 @Injectable()
 export class UserService {
